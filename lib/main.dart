@@ -17,10 +17,10 @@ class StoreApp extends StatefulWidget {
 class _StoreAppState extends State<StoreApp> {
   int selectedIndex = 0;
 
-  final Map<int, Widget> _pages = {
-    0: const DashboardPage(),
-    1: const CustomersPage(),
-  };
+  final _pages = [
+    const DashboardPage(),
+    const CustomersPage(),
+  ];
 
   void onItemTapped(int index) {
     setState(() {
@@ -33,7 +33,7 @@ class _StoreAppState extends State<StoreApp> {
     return MaterialApp(
       title: "Sales App",
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink),
         useMaterial3: true,
       ),
       home: Scaffold(
