@@ -19,19 +19,25 @@ class NavBar extends StatelessWidget {
       type: BottomNavigationBarType.fixed,
       items: const [
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
+          icon: Icon(Icons.home_outlined),
+          activeIcon: Icon(Icons.home),
           label: 'Inicio',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.search),
-          label: 'Buscar',
+          icon: Icon(Icons.person_outline),
+          label: 'Clientes',
+          activeIcon: Icon(Icons.person),
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.notifications),
-          label: 'Notificaciones',
+            icon: Icon(Icons.shopping_cart), label: 'Vender'),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.inventory_2_outlined),
+          activeIcon: Icon(Icons.inventory_2),
+          label: 'Inventario',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.person),
+          icon: Icon(Icons.settings_outlined),
+          activeIcon: Icon(Icons.settings),
           label: 'Perfil',
         ),
       ],
