@@ -52,6 +52,20 @@ class StockPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Stock"),
+        actions: [
+          Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: MaterialButton(
+                onPressed: () {},
+                color: const Color(0xFF423DD9),
+                textColor: Colors.white,
+                child: const Text(
+                  "Add new",
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.normal),
+                ),
+              )),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
