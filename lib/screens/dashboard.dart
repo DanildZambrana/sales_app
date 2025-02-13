@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sales_app/components/statistic_component.dart';
+import 'package:sales_app/components/table_stats_component.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -21,7 +22,8 @@ class _DashboardPageState extends State<DashboardPage> {
             appBar: AppBar(
               title: const Text("Dashboard"),
             ),
-            body: Center(
+            body: SingleChildScrollView(
+                child: Center(
               child: Column(
                 children: [
                   Card(
@@ -69,8 +71,27 @@ class _DashboardPageState extends State<DashboardPage> {
                       statValue: "573",
                       subtitle: "",
                       icon: Icons.group),
+                  const TableStatsCard(title: "Recent Sales", headers: [
+                    "Customer",
+                    "Product",
+                    "Amount",
+                    "Date"
+                  ], rows: [
+                    ["John Doe", "T-shirt", "\$29.99", "2023-07-15"],
+                    ["John Doe", "T-shirt", "\$29.99", "2023-07-15"],
+                    ["John Doe", "T-shirt", "\$29.99", "2023-07-15"],
+                  ]),
+                  const TableStatsCard(title: "Recent Sales", headers: [
+                    "Product",
+                    "Sales",
+                    "Revenue",
+                  ], rows: [
+                    ["T-shirt", "150", "\$4498.99"],
+                    ["T-shirt", "150", "\$4498.99"],
+                    ["T-shirt", "150", "\$4498.99"],
+                  ])
                 ],
               ),
-            )));
+            ))));
   }
 }
