@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sales_app/screens/customers.dart';
+import 'package:sales_app/screens/stock.dart';
 import 'structure/navbar.dart';
 import 'package:sales_app/screens/dashboard.dart';
 
@@ -20,6 +21,8 @@ class _StoreAppState extends State<StoreApp> {
   final _pages = [
     const DashboardPage(),
     const CustomersPage(),
+    Container(),
+    const StockPage(),
   ];
 
   void onItemTapped(int index) {
