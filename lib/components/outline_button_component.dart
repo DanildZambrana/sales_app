@@ -22,14 +22,20 @@ class OutlineButtonComponent extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
           ),
         ),
-        child: Text(
-          text,
-          style: TextStyle(
-            color: color,
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
+        child: Padding(
+          padding: const EdgeInsets.only(
+            left: 10,
+            right: 10
           ),
-        ),
+          child: Text(
+            text,
+            style: TextStyle(
+              color: color,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        )
       );
   }
 }
