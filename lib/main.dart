@@ -8,7 +8,7 @@ import 'package:sales_app/providers/contact_provider.dart';
 import 'package:sales_app/providers/product_provider.dart';
 import 'package:sales_app/providers/sale_provider.dart';
 import 'package:sales_app/screens/customers.dart';
-import 'package:sales_app/screens/sale_form.dart';
+import 'package:sales_app/screens/sale_screen.dart';
 import 'package:sales_app/screens/stock.dart';
 import 'structure/navbar.dart';
 import 'package:sales_app/screens/dashboard.dart';
@@ -56,7 +56,7 @@ class _StoreAppState extends State<StoreApp> {
     _pages = [
       const DashboardPage(),
       const CustomersPage(),
-      SaleFormScreen(
+      SaleScreen(
         confirm: (value) {
           print(value);
         },

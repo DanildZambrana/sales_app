@@ -4,11 +4,11 @@ import 'package:sales_app/components/card_with_buttons_component.dart';
 import 'package:sales_app/components/outline_button_component.dart';
 import 'package:sales_app/structure/labeled_navbar.dart';
 
-class SaleFormScreen extends StatelessWidget {
+class SaleScreen extends StatelessWidget {
   final Function confirm;
   final Function cancel;
 
-  const SaleFormScreen(
+  const SaleScreen(
       {super.key, required this.confirm, required this.cancel});
 
   @override
