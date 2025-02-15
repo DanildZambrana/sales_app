@@ -29,7 +29,7 @@ LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     final directory = await getApplicationDocumentsDirectory();
     final dbPath = p.join(directory.path, 'app_database.sqlite');
-    return NativeDatabase(File(dbPath)); // SQLite nativo
+    return NativeDatabase(File(dbPath));
   });
 }
 

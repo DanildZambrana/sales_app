@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sales_app/components/statistic_component.dart';
 import 'package:sales_app/components/table_stats_component.dart';
