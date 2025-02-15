@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sales_app/data/database.dart';
 import 'package:sales_app/data/repositories/contacts_repository.dart';
+import 'package:sales_app/data/repositories/sales_repository.dart';
 import 'package:sales_app/providers/contact_provider.dart';
+import 'package:sales_app/providers/sale_provider.dart';
 import 'package:sales_app/screens/customers.dart';
 import 'package:sales_app/screens/sale_form.dart';
 import 'package:sales_app/screens/stock.dart';
@@ -16,10 +18,15 @@ void main() async {
     MultiProvider(providers: [
       Provider<ContactsRepository>(
           create: (_) => ContactsRepository(AppDatabase.instance)),
+      Provider<SalesRepository>(
+          create: (_) => SalesRepository(AppDatabase.instance)),
       ChangeNotifierProvider(
           create: (context) =>
               ContactProvider(context.read<ContactsRepository>())
                 ..loadContacts()),
+      ChangeNotifierProvider(create: (context) =>
+          SaleProvider(context.read<SalesRepository>())
+      )
     ], child: const StoreApp()),
   );
 }

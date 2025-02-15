@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sales_app/components/card_with_buttons_component.dart';
 import 'package:sales_app/components/outline_button_component.dart';
+import 'package:sales_app/data/database.dart';
 import 'package:sales_app/providers/contact_provider.dart';
 import 'package:sales_app/providers/provider_state.dart';
+import 'package:sales_app/providers/sale_provider.dart';
 import 'package:sales_app/screens/customers_form.dart';
 
 class CustomersPage extends StatelessWidget {
@@ -41,43 +43,64 @@ class CustomersPage extends StatelessWidget {
   }
 
   Widget createContactsList(
-      ContactProvider contactProvider, BuildContext context) {
+      ContactProvider contactProvider,
+      SaleProvider salesProvider,
+      BuildContext context
+      ) {
     return SingleChildScrollView(
       child: Column(
         children: contactProvider.contacts.map((contact) {
-          return CardWithButtons(
-            cardTitle: contact.name,
-            cardSubtitle: contact.email,
-            startValue: "Orders: 1",
-            endValue: "Spent: \$100.00",
-            actionButtons: [
-              OutlineButtonComponent(
-                text: "Editar",
-                onPressed: () {
-                  showModalBottomSheet(
-                      context: context,
-                      builder: (context) => CustomersForm(
-                            contactData: contact,
-                          ));
-                },
-                color: Colors.deepPurple,
-              ),
-              OutlineButtonComponent(
-                text: "Eliminar",
-                onPressed: () {
-                  contactProvider.deleteContact(contact);
-                },
-                color: Colors.deepPurple,
-              ),
-            ],
+          return FutureBuilder<List<SaleData>>(
+            future: salesProvider.getSalesForContact(contact.id),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                // Mientras se carga la lista de ventas
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                // Si hubo un error al obtener la lista de ventas
+                return Text("Error: ${snapshot.error}");
+              } else {
+                // Ya tenemos los datos de las ventas
+                final sales = snapshot.data ?? [];
+                final ordersLength = sales.length;
+
+                return CardWithButtons(
+                  cardTitle: contact.name,
+                  cardSubtitle: contact.email,
+                  startValue: "Orders: $ordersLength",
+                  endValue: "Spent: \$100.00",
+                  actionButtons: [
+                    OutlineButtonComponent(
+                      text: "Editar",
+                      onPressed: () {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (context) => CustomersForm(
+                              contactData: contact,
+                            ));
+                      },
+                      color: Colors.deepPurple,
+                    ),
+                    OutlineButtonComponent(
+                      text: "Eliminar",
+                      onPressed: () {
+                        contactProvider.deleteContact(contact);
+                      },
+                      color: Colors.deepPurple,
+                    ),
+                  ],
+                );
+              }
+            },
           );
         }).toList(),
       ),
     );
   }
 
+
   Widget buildContactProviderBody(
-      ContactProvider contactProvider, BuildContext context) {
+      ContactProvider contactProvider, SaleProvider salesProvider, BuildContext context) {
     switch (contactProvider.state) {
       case ProviderState.loading:
         return buildLoadingView();
@@ -86,13 +109,14 @@ class CustomersPage extends StatelessWidget {
       case ProviderState.loaded:
         return contactProvider.contacts.isEmpty
             ? buildEmptyContactsView()
-            : createContactsList(contactProvider, context);
+            : createContactsList(contactProvider, salesProvider,context);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final contactProvider = Provider.of<ContactProvider>(context);
+    final salesProvider = Provider.of<SaleProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -111,7 +135,7 @@ class CustomersPage extends StatelessWidget {
           })
         ],
       ),
-      body: buildContactProviderBody(contactProvider, context),
+      body: buildContactProviderBody(contactProvider, salesProvider, context),
     );
   }
 }
