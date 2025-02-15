@@ -1,11 +1,79 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sales_app/components/card_with_buttons_component.dart';
 import 'package:sales_app/components/outline_button_component.dart';
+import 'package:sales_app/providers/product_provider.dart';
+import 'package:sales_app/providers/provider_state.dart';
+import 'package:sales_app/screens/products_form.dart';
 
 class StockPage extends StatelessWidget {
   const StockPage({super.key});
 
-  //Todo define real object types
+  static const unknownErrorText = "Ocurrió un error desconocido";
+
+  Widget buildLoadingView() {
+    return const Center(child: CircularProgressIndicator());
+  }
+
+  Widget buildErrorView(ProductProvider productProvider) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            productProvider.errorMessage ?? unknownErrorText,
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.red, fontSize: 16),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () => productProvider.loadProducts(),
+            child: const Text("Reintentar"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildEmptyProductsView() {
+    return const Center(child: Text("No hay productos disponibles"));
+  }
+
+  Widget createProductsList(
+      ProductProvider productProvider, BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: productProvider.products.map((product) {
+          return CardWithButtons(
+              cardTitle: product.name,
+              cardSubtitle: product.category,
+              startValue: product.stock.toString(),
+              endValue: product.price.toString(),
+              actionButtons: [
+                OutlineButtonComponent(
+                  text: "Editar",
+                  onPressed: () {
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (context) => ProductsForm(
+                              productData: product,
+                            ));
+                  },
+                  color: Colors.deepPurple,
+                ),
+                OutlineButtonComponent(
+                  text: "Eliminar",
+                  onPressed: () {
+                    productProvider.deleteProduct(product);
+                  },
+                  color: Colors.deepPurple,
+                ),
+              ]);
+        }).toList(),
+      ),
+    );
+  }
+
   PopupMenuButton<String> _buildPopOverItem(dynamic object) {
     return PopupMenuButton<String>(
       itemBuilder: (BuildContext context) => [
@@ -46,80 +114,45 @@ class StockPage extends StatelessWidget {
     );
   }
 
+  Widget buildProductProviderBody(
+      ProductProvider productProvider, BuildContext context) {
+    switch (productProvider.state) {
+      case ProviderState.loading:
+        return buildLoadingView();
+
+      case ProviderState.error:
+        return buildErrorView(productProvider);
+      case ProviderState.loaded:
+        return productProvider.products.isEmpty
+            ? buildEmptyProductsView()
+            : createProductsList(productProvider, context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final productProvider = Provider.of<ProductProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Stock"),
         actions: [
-          Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: MaterialButton(
-                onPressed: () {},
-                color: const Color(0xFF423DD9),
-                textColor: Colors.white,
-                child: const Text(
-                  "Add new",
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.normal),
-                ),
-              )),
+          IconButton(
+            icon: const Icon(Icons.sync),
+            onPressed: () {
+              productProvider.loadProducts();
+            },
+          ),
+          IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () {
+                showModalBottomSheet(
+                    context: context,
+                    builder: (context) => const ProductsForm());
+              })
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            CardWithButtons(
-                cardTitle: "T-shirt",
-                cardSubtitle: "SKU: TS001",
-                startValue: "In Stock: 100",
-                endValue: "Reorder At: 20",
-                actionButtons: [
-                  OutlineButtonComponent(
-                      text: "Adjust Stock",
-                      onPressed: () {},
-                      color: Colors.deepPurple),
-                  OutlineButtonComponent(
-                      text: "Reorder",
-                      onPressed: () {},
-                      color: Colors.deepPurple),
-                  _buildPopOverItem('first'),
-                ]),
-            CardWithButtons(
-                cardTitle: "T-shirt",
-                cardSubtitle: "SKU: TS001",
-                startValue: "In Stock: 100",
-                endValue: "Reorder At: 20",
-                actionButtons: [
-                  OutlineButtonComponent(
-                      text: "Adjust Stock",
-                      onPressed: () {},
-                      color: Colors.deepPurple),
-                  OutlineButtonComponent(
-                      text: "Reorder",
-                      onPressed: () {},
-                      color: Colors.deepPurple),
-                  _buildPopOverItem('second'),
-                ]),
-            CardWithButtons(
-                cardTitle: "T-shirt",
-                cardSubtitle: "SKU: TS001",
-                startValue: "In Stock: 100",
-                endValue: "Reorder At: 20",
-                actionButtons: [
-                  OutlineButtonComponent(
-                      text: "Adjust Stock",
-                      onPressed: () {},
-                      color: Colors.deepPurple),
-                  OutlineButtonComponent(
-                      text: "Reorder",
-                      onPressed: () {},
-                      color: Colors.deepPurple),
-                  _buildPopOverItem('third'),
-                ]),
-          ],
-        ),
-      ),
+      body: buildProductProviderBody(productProvider, context),
     );
   }
 }
