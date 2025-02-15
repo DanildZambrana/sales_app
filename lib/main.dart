@@ -57,10 +57,10 @@ class _StoreAppState extends State<StoreApp> {
       const DashboardPage(),
       const CustomersPage(),
       SaleScreen(
-        confirm: (value) {
+        onConfirm: (value) {
           print(value);
         },
-        cancel: () {
+        onCancel: () {
           setState(() {
             selectedIndex = 0;
           });
