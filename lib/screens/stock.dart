@@ -74,46 +74,6 @@ class StockPage extends StatelessWidget {
     );
   }
 
-  PopupMenuButton<String> _buildPopOverItem(dynamic object) {
-    return PopupMenuButton<String>(
-      itemBuilder: (BuildContext context) => [
-        const PopupMenuItem(value: "edit", child: Text("Edit")),
-        const PopupMenuItem(value: "delete", child: Text("Delete")),
-      ],
-      onSelected: (option) {
-        switch (option) {
-          case "edit":
-            print("Editing $object");
-            break;
-          case "delete":
-            print("Deleting $object");
-            break;
-        }
-      },
-      style: OutlinedButton.styleFrom(
-        side: const BorderSide(color: Colors.deepPurple),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-            color: Colors.transparent,
-            border: Border.all(
-              color: Colors.deepPurple,
-            ),
-            borderRadius: BorderRadius.circular(8)),
-        child: const Padding(
-          padding: EdgeInsets.all(4.0),
-          child: Icon(
-            Icons.more_vert,
-            color: Colors.deepPurple,
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget buildProductProviderBody(
       ProductProvider productProvider, BuildContext context) {
     switch (productProvider.state) {
