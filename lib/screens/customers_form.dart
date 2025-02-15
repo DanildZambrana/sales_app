@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sales_app/data/database.dart';
 import 'package:sales_app/providers/contact_provider.dart';
+import 'package:sales_app/components/custom_form_field.dart';
 
 class CustomersForm extends StatelessWidget {
   final ContactData? contactData;
 
   const CustomersForm({super.key, this.contactData});
 
-  static const EdgeInsets fieldPadding = EdgeInsets.all(
-      8.0);
+  static const EdgeInsets fieldPadding = EdgeInsets.all(8.0);
 
   @override
   Widget build(BuildContext context) {
@@ -27,41 +27,36 @@ class CustomersForm extends StatelessWidget {
       Navigator.pop(context);
     }
 
-    Widget buildInputField({
-      required String initialValue,
-      required String hintText,
-      required void Function(String) onChanged,
-    }) {
-      return Padding(
-        padding: fieldPadding,
-        child: TextFormField(
-          initialValue: initialValue,
-          decoration: InputDecoration(
-            hintText: hintText,
-            border: const OutlineInputBorder(),
-          ),
-          onChanged: onChanged,
-        ),
-      );
-    }
-
     return Card(
       child: Column(
         children: [
-          buildInputField(
+          CustomFormField<String>(
             initialValue: name,
             hintText: 'Nombre',
             onChanged: (value) => name = value,
           ),
-          buildInputField(
+          CustomFormField<String>(
+            isEmail: true,
             initialValue: email,
             hintText: 'Correo',
             onChanged: (value) => email = value,
           ),
-          ElevatedButton(
-            onPressed: handleSave,
-            child: Text(contactData != null ? "Actualizar" : "Crear"),
-          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: handleSave,
+                child: Text(contactData != null ? "Actualizar" : "Crear"),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Cancelar"),
+              ),
+            ],
+          )
         ],
       ),
     );
