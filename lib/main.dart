@@ -3,15 +3,19 @@ import 'package:provider/provider.dart';
 import 'package:sales_app/data/database.dart';
 import 'package:sales_app/data/repositories/contacts_repository.dart';
 import 'package:sales_app/data/repositories/products_repository.dart';
+import 'package:sales_app/data/repositories/sale_lines_repository.dart';
 import 'package:sales_app/data/repositories/sales_repository.dart';
 import 'package:sales_app/providers/contact_provider.dart';
+import 'package:sales_app/providers/current_sale_provider.dart';
 import 'package:sales_app/providers/product_provider.dart';
 import 'package:sales_app/providers/sale_provider.dart';
 import 'package:sales_app/screens/customers.dart';
 import 'package:sales_app/screens/sale_screen.dart';
+import 'package:sales_app/screens/sales_screen.dart';
 import 'package:sales_app/screens/stock.dart';
 import 'structure/navbar.dart';
 import 'package:sales_app/screens/dashboard.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,16 +28,22 @@ void main() async {
           create: (_) => SalesRepository(AppDatabase.instance)),
       Provider<ProductsRepository>(
           create: (_) => ProductsRepository(AppDatabase.instance)),
+      Provider<SaleLinesRepository>(
+        create: (_) => SaleLinesRepository(AppDatabase.instance),
+      ),
       ChangeNotifierProvider(
           create: (context) =>
-              ContactProvider(context.read<ContactsRepository>())
-                ..loadContacts()),
+          ContactProvider(context.read<ContactsRepository>())
+            ..loadContacts()),
       ChangeNotifierProvider(
-          create: (context) => SaleProvider(context.read<SalesRepository>())),
+          create: (context) => SaleProvider(context.read<SalesRepository>(), context.read<SaleLinesRepository>())),
       ChangeNotifierProvider(
           create: (context) =>
-              ProductProvider(context.read<ProductsRepository>())
-                ..loadProducts()),
+          ProductProvider(context.read<ProductsRepository>())
+            ..loadProducts()),
+      ChangeNotifierProvider(create: (context) =>
+          CurrentSaleProvider()
+      ),
     ], child: const StoreApp()),
   );
 }
@@ -54,11 +64,19 @@ class _StoreAppState extends State<StoreApp> {
   void initState() {
     super.initState();
     _pages = [
-      const DashboardPage(),
+      DashboardPage(
+          goToSales: () {
+            setState(() {
+              selectedIndex = 4;
+            });
+          },
+       ),
       const CustomersPage(),
       SaleScreen(
-        onConfirm: (value) {
-          print(value);
+        onConfirm: () {
+          setState(() {
+            selectedIndex = 0;
+          });
         },
         onCancel: () {
           setState(() {
@@ -67,6 +85,7 @@ class _StoreAppState extends State<StoreApp> {
         },
       ),
       const StockPage(),
+      const SalesScreen(),
     ];
   }
 

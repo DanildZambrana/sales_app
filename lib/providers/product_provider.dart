@@ -72,4 +72,14 @@ class ProductProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+  Future<int> getTotalProducts() async {
+    try {
+      final products = await repository.getProducts();
+
+      return products.length;
+    } catch (e) {
+      debugPrint("Error calculating total products: $e");
+      return 0;
+    }
+  }
 }

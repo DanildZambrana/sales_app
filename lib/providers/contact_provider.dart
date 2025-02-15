@@ -71,4 +71,17 @@ class ContactProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<int> getActiveCustomers() async {
+    try {
+      final contacts = await repository.getContacts();
+
+      return contacts.length;
+    } catch (e) {
+      debugPrint("Error fetching active customers: $e");
+      return 0;
+    }
+  }
+
+
 }
